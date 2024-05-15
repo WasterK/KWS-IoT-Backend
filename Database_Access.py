@@ -10,6 +10,10 @@ class DatabaseAccess:
         except psycopg2.Error as e:
             print(f"Database connection error : {e}")
             raise psycopg2.DatabaseError("Connection error occurred")
+        
+    def close_connection(self):
+        if self.conn:
+            self.conn.close()
 
     def create_table(self, table_name: str) -> None:
         try:
@@ -114,6 +118,16 @@ class DatabaseAccess:
             print(f"Error While creating new, Error: {e}")
             return -1   
     
+    def delete_device(self, device_id):
+        try:
+            query = "DELETE FROM devices WHERE device_id = %s"
+            self.cur.execute(query, (device_id,))
+            self.conn.commit()
+            print('Device deleted successfully')
+        except psycopg2.Error as e:
+            self.conn.rollback()
+            print(f"Error While creating new, Error: {e}")
+            return -1   
 
 # db = DatabaseAccess(database_url="postgres://admin:OpJDk0pEeegH9dqDkYA7BCWOE8XYoeMB@dpg-cockj5fsc6pc73d1q1m0-a.singapore-postgres.render.com/device_manag_db")
 # db.get_all_devices('115762642791498046873')

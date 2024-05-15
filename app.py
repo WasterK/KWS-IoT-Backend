@@ -170,10 +170,19 @@ def add_new_device():
     deviceUrl = data.get('device_url')
     userId = data.get('user_id')
     db = DatabaseAccess(DATABASE_URL)
-    status = db.create_new_device(deviceName, deviceUrl, userId)
+    deviceId = db.create_new_device(deviceName, deviceUrl, userId)
+    if deviceId == -1:
+        pass
+    db.close_connection()
+    return jsonify({'msg': "Login successful!", "status": "success", 'body':{'device_id': deviceId}}), 200
+
+@app.delete('/delete-device/<int:device_id>')
+def delete_existing_device(device_id):
+    db = DatabaseAccess(DATABASE_URL)
+    status = db.delete_device(device_id)
     if status == -1:
         pass
-    return jsonify({'msg': "Login successful!", "status": "success"}), 200
+    return jsonify({'msg': "device deleted successful!", "status": "success"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, ssl_context=("cert.pem", "key.pem"))
