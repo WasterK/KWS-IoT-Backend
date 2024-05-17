@@ -109,10 +109,12 @@ class DatabaseAccess:
     def create_new_device(self, deviceName, deviceUrl, userId):
         try:
             print('In device creation', deviceName, deviceUrl, userId)
-            query = "INSERT INTO devices(device_url, user_id, device_name) VALUES(%s, %s, %s)"
+            query = "INSERT INTO devices(device_url, user_id, device_name) VALUES(%s, %s, %s) RETURNING device_id"
             self.cur.execute(query, (deviceUrl, userId, deviceName))
+            output = self.cur.fetchone()
             self.conn.commit()
             print('Device added successfuly')
+            return output[0] 
         except psycopg2.Error as e:
             self.conn.rollback()
             print(f"Error While creating new, Error: {e}")
