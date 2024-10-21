@@ -1,0 +1,9 @@
+flask
+psycopg2
+psycopg2-binary
+flask_cors
+flask_bcrypt
+flask_login
+oauthlib
+requests
+cryptography
